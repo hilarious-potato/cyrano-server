@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const reportSchema = new Schema({
   messageId: {
     type: Schema.Types.ObjectId,
-    require: true,
+    required: true,
     ref: "Message",
   },
   isOpen: {

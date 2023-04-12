@@ -18,6 +18,16 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Name is required."],
     },
+    role: {
+      type: String,
+      enum: ["admin", "moderator", "basic"],
+      required: true,
+      default: "basic",
+    },
+    tresors: {
+      type: [Schema.Types.ObjectId],
+      ref: "Tresor",
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

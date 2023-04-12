@@ -3,9 +3,12 @@ const { randomUUID } = require("crypto");
 
 const messageSchema = new Schema(
   {
-    content: String,
+    encryptedContent: {
+      type: String,
+      required: true,
+    },
     editId: {
-      type: "UUID",
+      type: String,
       default: () => randomUUID(),
     },
     expireDate: {

@@ -24,6 +24,10 @@ const userSchema = new Schema(
       required: true,
       default: "basic",
     },
+    tresors: {
+      type: [Schema.Types.ObjectId],
+      ref: "Tresor",
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

@@ -7,9 +7,12 @@ const Tresor = require("../models/Tresor.model");
 // GET list of all users
 router.get("/users/", (req, res, next) => {
   User.find()
-    .populate("tresors")
     .then((response) => {
-      res.status(200).json(response);
+      const userList = response.map((user) => {
+        const { _id, email, name, role } = user;
+        return { _id, email, name, role };
+      });
+      res.status(200).json(userList);
     })
     .catch((err) => next(err));
 });

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Types } = require("mongoose");
 const User = require("../models/User.model");
+const Tresor = require("../models/Tresor.model");
 
 // GET list of all users
 router.get("/users/", (req, res, next) => {
@@ -10,7 +11,7 @@ router.get("/users/", (req, res, next) => {
     .then((response) => {
       res.status(200).json(response);
     })
-    .catch((err) => res.status(404).json(err));
+    .catch((err) => next(err));
 });
 
 // GET single user and populate tresors
@@ -22,10 +23,10 @@ router.get("/users/:userId", (req, res, next) => {
   } else {
     User.findById(userId)
       .then((response) => {
-        const { _id, email, name } = response;
-        res.status(200).json({ _id, email, name });
+        const { _id, email, name, role } = response;
+        res.status(200).json({ _id, email, name, role });
       })
-      .catch((err) => res.status(404).response(err));
+      .catch((err) => next(err));
   }
 });
 
@@ -43,7 +44,7 @@ router.put("/users/:userId", (req, res, next) => {
       .then((response) => {
         res.status(200).json(response);
       })
-      .catch((err) => res.status(404).response(err));
+      .catch((err) => next(err));
   }
 });
 
@@ -67,7 +68,7 @@ router.delete("/users/:userId", (req, res, next) => {
         return User.findByIdAndDelete(userId);
       })
       .then((response) => res.status(200).json(response))
-      .catch((err) => res.status(400).json(err));
+      .catch((err) => next(err));
   }
 });
 

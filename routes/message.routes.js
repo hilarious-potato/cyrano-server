@@ -32,7 +32,6 @@ router.get("/:messageId", (req, res, next) => {
         res.status(200).json(response);
       })
       .catch((err) => {
-        res.status(400).json(err);
         next(err);
       });
   }
@@ -51,7 +50,6 @@ router.put("/:editId", (req, res, next) => {
       res.status(200).json(response);
     })
     .catch((err) => {
-      res.status(500).json(err);
       next(err);
     });
 });
@@ -65,7 +63,6 @@ router.delete("/:editId", (req, res, next) => {
       res.status(200).json(response);
     })
     .catch((err) => {
-      res.status(500).json(err);
       next(err);
     });
 });

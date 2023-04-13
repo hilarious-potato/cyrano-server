@@ -42,7 +42,8 @@ router.put("/users/:userId", (req, res, next) => {
     User.findByIdAndUpdate(userId, { role }, { new: true })
       .populate("tresors")
       .then((response) => {
-        res.status(200).json(response);
+        const { _id, email, name, role } = response;
+        res.status(200).json({ _id, email, name, role });
       })
       .catch((err) => next(err));
   }
@@ -67,7 +68,9 @@ router.delete("/users/:userId", (req, res, next) => {
         console.log("response: ", response);
         return User.findByIdAndDelete(userId);
       })
-      .then((response) => res.status(200).json(response))
+      .then((response) =>
+        res.status(200).json({ message: "User was deleted!" })
+      )
       .catch((err) => next(err));
   }
 });

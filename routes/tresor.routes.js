@@ -2,6 +2,7 @@ const express = require("express");
 const { Types } = require("mongoose");
 const router = express.Router();
 const Tresor = require("../models/Tresor.model");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 // create
 
@@ -23,7 +24,7 @@ router.post("/", (req, res, next) => {
 
 // read
 
-router.get("/:tresorId", (req, res, next) => {
+router.get("/:tresorId", isAuthenticated, (req, res, next) => {
   const { tresorId } = req.params;
 
   if (!Types.ObjectId.isValid(tresorId)) {

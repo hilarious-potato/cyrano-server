@@ -20,7 +20,12 @@ require("./config")(app);
 app.use("/api", require("./routes/index.routes"));
 app.use("/auth", require("./routes/auth.routes"));
 app.use("/api/messages", require("./routes/message.routes"));
-app.use("/api/admin", isAuthenticated, require("./routes/admin.routes"));
+app.use(
+  "/api/admin",
+  isAuthenticated,
+  isAdmin,
+  require("./routes/admin.routes")
+);
 app.use("/api/tresors", isAuthenticated, require("./routes/tresor.routes"));
 app.use(
   "/api/reports",

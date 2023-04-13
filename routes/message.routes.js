@@ -1,4 +1,5 @@
 const express = require("express");
+const { Types } = require("mongoose");
 const router = express.Router();
 const Message = require("../models/Message.model");
 
@@ -24,16 +25,20 @@ router.post("/", (req, res, next) => {
 router.get("/:messageId", (req, res, next) => {
   const { messageId } = req.params;
 
-  Message.findById(messageId)
-    .then((response) => {
-      //   console.log("editId: ", response.editId.toString());
-      //   console.log("response: ", response);
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-      next(err);
-    });
+  if (!Types.ObjectId.isValid(messageId)) {
+    res.status(400).json({ message: "Please provide a valid ID!" });
+  } else {
+    Message.findById(messageId)
+      .then((response) => {
+        //   console.log("editId: ", response.editId.toString());
+        //   console.log("response: ", response);
+        res.status(200).json(response);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+        next(err);
+      });
+  }
 });
 
 // update

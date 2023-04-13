@@ -1,4 +1,5 @@
 const express = require("express");
+const { Types } = require("mongoose");
 const router = express.Router();
 const Tresor = require("../models/Tresor.model");
 
@@ -25,15 +26,19 @@ router.post("/", (req, res, next) => {
 router.get("/:tresorId", (req, res, next) => {
   const { tresorId } = req.params;
 
-  Tresor.findById(tresorId)
-    .then((response) => {
-      console.log("response: ", response);
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      console.log("err: ", err);
-      res.status(404).json(err);
-    });
+  if (!Types.ObjectId.isValid(tresorId)) {
+    res.status(400).json({ message: "Please provide a valid ID!" });
+  } else {
+    Tresor.findById(tresorId)
+      .then((response) => {
+        console.log("response: ", response);
+        res.status(200).json(response);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        res.status(404).json(err);
+      });
+  }
 });
 
 // update

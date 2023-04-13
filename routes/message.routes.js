@@ -1,14 +1,14 @@
 const express = require("express");
-const { Types } = require("mongoose");
 const router = express.Router();
+const { Types } = require("mongoose");
 const Message = require("../models/Message.model");
 
 // create
 router.post("/", (req, res, next) => {
-  const data = ({ encryptedContent } = req.body);
-  console.log(data);
+  const { encryptedContent } = req.body;
+
   // console.log(encryptedContent);
-  Message.create(data)
+  Message.create({ encryptedContent })
     .then((response) => {
       //   console.log(response);
       res.status(201).json(response);
@@ -29,8 +29,6 @@ router.get("/:messageId", (req, res, next) => {
   } else {
     Message.findById(messageId)
       .then((response) => {
-        //   console.log("editId: ", response.editId.toString());
-        //   console.log("response: ", response);
         res.status(200).json(response);
       })
       .catch((err) => {
@@ -43,14 +41,16 @@ router.get("/:messageId", (req, res, next) => {
 // update
 router.put("/:editId", (req, res, next) => {
   const { editId } = req.params;
-  const data = ({ encryptedContent, expireDate } = req.body);
-  Message.findOneAndUpdate({ editId }, data, { new: true })
+  const { encryptedContent, expireDate } = req.body;
+  Message.findOneAndUpdate(
+    { editId },
+    { encryptedContent, expireDate },
+    { new: true }
+  )
     .then((response) => {
-      //   console.log("response: ", response);
       res.status(200).json(response);
     })
     .catch((err) => {
-      //   console.log("err: ", err);
       res.status(500).json(err);
       next(err);
     });
@@ -62,11 +62,9 @@ router.delete("/:editId", (req, res, next) => {
 
   Message.findOneAndDelete({ editId })
     .then((response) => {
-      //   console.log("response: ", response);
       res.status(200).json(response);
     })
     .catch((err) => {
-      //   console.log("err: ", err);
       res.status(500).json(err);
       next(err);
     });

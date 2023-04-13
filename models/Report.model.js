@@ -6,12 +6,19 @@ const reportSchema = new Schema({
     required: true,
     ref: "Message",
   },
+  reportDescription: {
+    type: String,
+    default: "Reported abusive content",
+  },
   isOpen: {
     type: Boolean,
     required: true,
     default: true,
   },
-  password: String,
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 const Report = model("Report", reportSchema);

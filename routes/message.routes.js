@@ -5,11 +5,10 @@ const Message = require("../models/Message.model");
 
 // create
 router.post("/", (req, res, next) => {
-  const { encryptedContent } = req.body;
-  // ? const data = { encryptedContent } = req.body;
+  const data = ({ encryptedContent } = req.body);
 
   // console.log(encryptedContent);
-  Message.create({ encryptedContent })
+  Message.create(data)
     .then((response) => {
       //   console.log(response);
       res.status(201).json(response);

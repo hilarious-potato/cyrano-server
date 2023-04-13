@@ -1,13 +1,14 @@
 const express = require("express");
+const { Types } = require("mongoose");
 const router = express.Router();
 const Message = require("../models/Message.model");
 
 // create
 router.post("/", (req, res, next) => {
-  const { encryptedContent } = req.body;
+  const data = ({ encryptedContent } = req.body);
 
-  console.log(encryptedContent);
-  Message.create({ encryptedContent })
+  // console.log(encryptedContent);
+  Message.create(data)
     .then((response) => {
       //   console.log(response);
       res.status(201).json(response);
@@ -23,16 +24,20 @@ router.post("/", (req, res, next) => {
 router.get("/:messageId", (req, res, next) => {
   const { messageId } = req.params;
 
-  Message.findById(messageId)
-    .then((response) => {
-      //   console.log("editId: ", response.editId.toString());
-      //   console.log("response: ", response);
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-      next(err);
-    });
+  if (!Types.ObjectId.isValid(messageId)) {
+    res.status(400).json({ message: "Please provide a valid ID!" });
+  } else {
+    Message.findById(messageId)
+      .then((response) => {
+        //   console.log("editId: ", response.editId.toString());
+        //   console.log("response: ", response);
+        res.status(200).json(response);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+        next(err);
+      });
+  }
 });
 
 // update

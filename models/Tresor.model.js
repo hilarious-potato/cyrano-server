@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const tresorSchema = new Schema(
   {
-    name: { type: String, required: true },
+    title: { type: String, required: true },
     messages: String,
   },
   {

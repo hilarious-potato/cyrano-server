@@ -77,8 +77,13 @@ router.put("/:tresorId", isAuthenticated, (req, res, next) => {
   const data = { title, messages };
   Tresor.findByIdAndUpdate(tresorId, data, { new: true })
     .then((response) => {
-      //   console.log("response: ", response);
-      res.status(200).json(response);
+      if (response) {
+        res.status(200).json(response);
+      } else {
+        res
+          .status(404)
+          .json({ message: "sorry your tresor was not found on server" });
+      }
     })
     .catch((err) => {
       //   console.log("err: ", err);
@@ -100,9 +105,15 @@ router.delete("/:tresorId", isAuthenticated, (req, res, next) => {
       return Tresor.findByIdAndDelete(tresorId);
     })
     .then((response) => {
-      res.status(200).json({
-        message: `deleted Tresor "${response.title}" with id: ${response.id}`,
-      });
+      if (response) {
+        res.status(200).json({
+          message: `deleted Tresor "${response.title}" with id: ${response.id}`,
+        });
+      } else {
+        res
+          .status(404)
+          .json({ message: "sorry your tresor was not found on server" });
+      }
     })
     .catch((err) => next(err));
 });

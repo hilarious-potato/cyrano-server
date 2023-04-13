@@ -39,11 +39,8 @@ router.get("/:reportId", (req, res, next) => {
 //Create
 
 router.post("/", (req, res, next) => {
-  const data = ({
-    messageId,
-    password: messagePassword,
-    reportDescription,
-  } = req.body);
+  const { messageId, password: messagePassword, reportDescription } = req.body;
+  const data = { messageId, password, reportDescription };
   if (!Types.ObjectId.isValid(messageId)) {
     res.status(400).json({ message: "Please provide a valid message ID" });
   } else if (!(typeof data.password === "string" && data.password.length > 0)) {
@@ -72,7 +69,8 @@ router.post("/", (req, res, next) => {
 //edit
 router.put("/:reportId", (req, res, next) => {
   const { reportId } = req.params;
-  const data = ({ isOpen } = req.body);
+  const { isOpen } = req.body;
+  const data = { isOpen };
   if (!Types.ObjectId.isValid(reportId)) {
     res.status(400).json({ message: "Provide a valid Report Id" });
   } else if (!(typeof data.isOpen === "boolean")) {

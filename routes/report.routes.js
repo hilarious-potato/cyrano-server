@@ -3,6 +3,8 @@ const router = express.Router();
 const Report = require("../models/Report.model");
 const { Types } = require("mongoose");
 const Message = require("../models/Message.model");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
+const isAdmin = require("../middleware/isAdmin");
 
 //Read
 router.get("/", (req, res, next) => {

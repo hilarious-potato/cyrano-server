@@ -20,25 +20,36 @@ router.post("/", (req, res, next) => {
     });
 });
 
-// read
-router.get("/:messageId", (req, res, next) => {
-  const { messageId } = req.params;
+//Get by edit Id
 
-  if (!Types.ObjectId.isValid(messageId)) {
-    res.status(400).json({ message: "Please provide a valid ID!" });
-  } else {
-    Message.findById(messageId)
-      .then((response) => {
-        res.status(200).json(response);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  }
+router.get("/edit/:editId", (req, res, next) => {
+  const { editId } = req.params;
+  Message.findOne({ editId })
+    .then((response) => {
+      response
+        ? res.status(200).json(response)
+        : res.status(404).json({ message: "Message not found on server" });
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+// delete
+router.delete("/edit/:editId", (req, res, next) => {
+  const { editId } = req.params;
+
+  Message.findOneAndDelete({ editId })
+    .then((response) => {
+      res.status(200).json(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 // update
-router.put("/:editId", (req, res, next) => {
+router.put("/edit/:editId", (req, res, next) => {
   const { editId } = req.params;
   const { encryptedContent, expireDate } = req.body;
   Message.findOneAndUpdate(
@@ -54,17 +65,19 @@ router.put("/:editId", (req, res, next) => {
     });
 });
 
-// delete
-router.delete("/:editId", (req, res, next) => {
-  const { editId } = req.params;
+router.get("/:messageId", (req, res, next) => {
+  const { messageId } = req.params;
 
-  Message.findOneAndDelete({ editId })
-    .then((response) => {
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  if (!Types.ObjectId.isValid(messageId)) {
+    res.status(400).json({ message: "Please provide a valid ID!" });
+  } else {
+    Message.findById(messageId)
+      .then((response) => {
+        res.status(200).json(response);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
 });
-
 module.exports = router;

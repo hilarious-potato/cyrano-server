@@ -14,6 +14,10 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Password is required."],
     },
+    salt: {
+      type: String,
+      required: [true, "Salt is required"],
+    },
     name: {
       type: String,
       required: [true, "Name is required."],

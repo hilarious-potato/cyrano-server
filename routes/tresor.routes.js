@@ -6,10 +6,25 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 const User = require("../models/User.model");
 
 // create
+router.get("/", isAuthenticated, (req, res, next) => {
+  const fetchTresors = async () => {
+    try {
+      const userFromDb = await User.findById(req.payload._id).populate(
+        "tresors"
+      );
 
+      if (userFromDb) {
+        res.json({ tresors: userFromDb.tresors });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  fetchTresors();
+});
 router.post("/", isAuthenticated, (req, res, next) => {
-  const { title, messages } = req.body;
-  const data = { title, messages };
+  const { title, messages, salt } = req.body;
+  const data = { title, messages, salt };
   let tresor = null;
   //   console.log("data: ", data);
   if (!(typeof data.title === "string" && data.title.length > 0)) {

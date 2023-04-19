@@ -18,7 +18,7 @@ const saltRounds = 10;
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, salt } = req.body;
 
   // Check if email or password or name are provided as empty strings
   if (email === "" || password === "" || name === "") {
@@ -53,14 +53,17 @@ router.post("/signup", (req, res, next) => {
       }
 
       // If email is unique, proceed to hash the password
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hashedPassword = bcrypt.hashSync(password, salt);
+      const salt2 = bcrypt.genSaltSync(saltRounds);
+      const hashedPassword = bcrypt.hashSync(password, salt2);
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      const userToCreate = { email, password: hashedPassword, name, salt };
+      console.log(`sendign ${userToCreate} to database`);
+      return User.create(userToCreate);
     })
     .then((createdUser) => {
+      console.log(createdUser);
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
       const { email, name, _id } = createdUser;
@@ -73,7 +76,25 @@ router.post("/signup", (req, res, next) => {
     })
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
-
+router.post("/login/salt", (req, res, next) => {
+  const { email } = req.body;
+  console.log(req.body);
+  console.log(email);
+  if (!email || email === "") {
+    res.status(400).json({ message: "Provide email" });
+    return;
+  }
+  User.findOne({ email })
+    .then((foundUser) => {
+      if (!foundUser) {
+        res.status(401).json({ message: "User not found." });
+        return;
+      }
+      const { salt } = foundUser;
+      res.json({ salt });
+    })
+    .catch((err) => next(err));
+});
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
@@ -110,6 +131,7 @@ router.post("/login", (req, res, next) => {
         });
 
         // Send the token as the response
+        console.log(authToken);
         res.status(200).json({ authToken: authToken });
       } else {
         res.status(401).json({ message: "Unable to authenticate the user" });

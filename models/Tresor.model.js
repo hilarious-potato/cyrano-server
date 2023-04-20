@@ -2,8 +2,9 @@ const { Schema, model } = require("mongoose");
 
 const tresorSchema = new Schema(
   {
-    title: { type: String, required: true },
+    title: { type: String, required: [true, "Title is required"] },
     messages: String,
+    salt: { type: String, required: [true, "Salt is required"] },
   },
   {
     timestamps: true,
